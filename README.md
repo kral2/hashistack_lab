@@ -17,7 +17,7 @@ To start a Kubernetes cluster and a Vault server from scratch, just run the *00_
 > ./00_init.sh
 ```
 
-If Vault or Minikube are already running on your system, you will have to choice to abort without doing anything or to reset both with the default configuration.
+If Vault or Minikube are already running on your system, you will have the choice to reset both with the default configuration or to abort.
 
 To stop your Kubernetes cluster and your Vault server, just run the *99_kill.sh* script.
 
@@ -39,3 +39,7 @@ Run the command below in another terminal to open the Kubernetes dashboard in yo
 ```shell
    minikube dashboard
 ```
+
+## Misc
+
+Vault write its logs to `~/.hashistack/log/vault.log`. This file is deleted when the Vault server is stopped using kill scripts.

@@ -10,6 +10,11 @@ version="0.1.0"
 echo "Running $script_name - version $version"
 echo ""
 
+HASHISTACK_DIR="$HOME/.hashistack/"
+HASHISTACK_LOG_DIR="$HASHISTACK_DIR/log"
+
+mkdir -p "$HASHISTACK_DIR/log"
+
 # Check vault installation.
 VAULT_VERSION=$(vault version)
 
@@ -21,8 +26,8 @@ fi
 
 RESET_VAULT="Y"
 
-if [ -f vault.pid ]; then
-  VAULT_PID="$(cat vault.pid)"
+if [ -f "$HASHISTACK_DIR/vault.pid" ]; then
+  VAULT_PID=$(cat "$HASHISTACK_DIR/vault.pid")
   echo "Vault seems to be running under PID $VAULT_PID"
   echo "Running with this startup command:"
   echo ""
@@ -33,7 +38,7 @@ if [ -f vault.pid ]; then
     [ "$RESET_VAULT" == "" ] || [ "$RESET_VAULT" == "Y" ] || [ "$RESET_VAULT" == "y" ]; then
     kill -9 "$VAULT_PID"
     echo "Killed Vault (PID:$VAULT_PID)"
-    rm vault.pid vault.log
+    rm "$HASHISTACK_DIR/vault.pid" "$HASHISTACK_LOG_DIR/vault.log"
   else # exit without action if answer is anything different that the accepted inputs
     echo "No action. Exiting."
     exit 0
@@ -42,13 +47,13 @@ fi
 
 export VAULT_LOG_LEVEL=debug
 
-vault server -dev -dev-root-token-id=root -dev-listen-address="0.0.0.0:8200" >./vault.log 2>&1 &
+vault server -dev -dev-root-token-id=root -dev-listen-address="0.0.0.0:8200" >"$HASHISTACK_LOG_DIR/vault.log" 2>&1 &
 
-echo $! > vault.pid
+echo $! >  "$HASHISTACK_DIR/vault.pid"
 
 sleep 5
 
-echo "Vault started with PID:$(cat vault.pid)"
+echo "Vault started with PID:$(cat "$HASHISTACK_DIR/vault.pid")"
 echo "$VAULT_VERSION"
 
 # Print connection information
